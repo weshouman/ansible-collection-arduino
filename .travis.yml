@@ -9,7 +9,7 @@ services: docker
 
 env:
   global:
-    - ROLE_NAME: apt-proxy
+    - COLLECTION_NAME: arduino
   matrix:
     - MOLECULE_DISTRO_BOX: generic/ubuntu1804
 
