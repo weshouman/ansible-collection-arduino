@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include arduino_setup"
+      include_role:
+        name: "arduino_setup"
