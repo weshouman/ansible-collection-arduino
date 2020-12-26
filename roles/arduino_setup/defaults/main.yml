@@ -1,0 +1,13 @@
+---
+ardcli_version: "0.14.0"
+ardcli_file: "arduino-cli_{{ ardcli_version }}_Linux_64bit"
+ardcli_tmp_dir: "/tmp/{{ ardcli_file }}"
+ardcli_install_dir: "/usr/local/bin"
+ardcli_config_dir: "/home/${USER}/Arduino/config/"
+ardcli_config_file: "{{ ardcli_config_dir }}/arduino-cli.yaml"
+ardcli_additional_urls:
+  - "https://dl.espressif.com/dl/package_esp32_index.json"
+
+ardcli_cores:
+  - "esp32:esp32"
+

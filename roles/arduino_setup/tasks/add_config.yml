@@ -1,0 +1,11 @@
+---
+- name: Check if a config file was created
+  stat:
+    path: "{{ ardcli_config_file }}"
+  register: config_file
+
+- name: Create a config file
+  shell:
+    cmd: arduino-cli config-init --dest-dir {{ ardcli_config_dir }}
+  when: config_file.stat.exists == false
+

@@ -1,0 +1,40 @@
+---
+- name: Check if a config file was created
+  stat:
+    path: "{{ ardcli_config_file }}"
+  register: reg_config_file
+
+- name: Add URLs
+  block:
+    - name: Check if espressif is added to the sources
+      command: grep -Fxq "{{ item }}" "{{ ardcli_config_file }}"
+      register: check_espressif
+      check_mode: no
+      ignore_errors: yes
+      changed_when: no
+      when: reg_config_file.stat.exists == true
+
+    - name: Add Espressif to the sources
+      script: files/additional_urls_adder.sh "{{ item }}" "{{ ardcli_config_file }}"
+      when: reg_config_file.stat.exists == true && check_espressif.rc != 0
+  with_items: {{ ardcli_additional_urls }}
+
+- name: Add cores
+  block:
+    - name: Check installed cores
+      shell:
+        cmd: arduino-cli core list --config-file "{{ ardcli_config_file }}" | awk -v CORE={{ item }} '{if($1==CORE)print $2;}'
+      register: reg_installed_cores
+
+    # Add core only if not installed, regardless of the version
+    # TODO: Upgrade to a prespecified version
+    - name: Add core
+      shell:
+        cmd: arduino-cli core install {{ item }} --config-file "{{ ardcli_config_file }}"
+      when: reg_installed_cores.stdout == ""
+  with_items: {{ ardcli_cores }}
+
+- name: Show installed cores
+  shell:
+    cmd: arduino-cli core list --config-file "{{ ardcli_config_file }}"
+

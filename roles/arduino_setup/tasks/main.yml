@@ -1,0 +1,13 @@
+---
+- include_tasks: arduino-cli.yml
+  when:
+    - subtasks == "all" or subtasks == "install_arduino_cli"
+
+- include_tasks: add_config.yml
+  when:
+    - subtasks == "all" or subtasks == "add_config"
+
+- include_tasks: install_cores.yml
+  when:
+    - subtasks == "all" or subtasks == "install_cores"
+

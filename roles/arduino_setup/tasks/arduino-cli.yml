@@ -1,0 +1,27 @@
+---
+- name: Arduino Install Wrapper
+  block:
+    # Do not redownload the Arduino CLI
+    - name: Check if Arduino CLI previously downloaded
+      stat:
+        path: "{{ ardcli_install_dir }}/arduino-cli"
+      register: ardcli_dl_file
+
+    - name: Install Arduino CLI
+      shell:
+        cmd: curl -L https://github.com/arduino/arduino-cli/releases/download/{{ ardcli_version }}/{( ardcli_file )}.tar.gz | tar -zxC {{ ardcli_tmp_dir }}
+      when: ardcli_dl_file.stat.exists == false
+
+    - name: Copy Arduino CLI into /usr/local/bin {{ ardcli_install_dir }}
+      copy:
+        src: {{ ardcli_tmp_dir }}/arduino-cli
+        dest: {{ ardcli_install_dir }}/arduino-cli
+        force: no
+
+  when:
+    - action == "install"
+
+- name: Adruino Uninstall
+  shell:
+    cmd: rm {{ ardcli_install_dir }}/arduino-cli
+
